@@ -53,7 +53,7 @@ try {
 
 `prompt()` returns the decoded `structured_output` object as an array. An array input is JSON-encoded and sent on stdin. A string input is sent unchanged.
 
-You can check the CLI first with `$claude->available()` (bool) and `$claude->version()` (`?string`). Both run `claude --version` and compare it with `ClaudeCode::MINIMUM_VERSION` (2.1.280). The result is cached per instance.
+You can check the CLI first with `$claude->available()` (bool) and `$claude->version()` (`?string`). Both run `claude --version` and compare it with `ClaudeCode::MINIMUM_VERSION` (2.1.280). A found version is cached per instance. A missing or broken CLI is checked again on the next call.
 
 ## Laravel
 

@@ -14,8 +14,6 @@ final class ClaudeCode
 
     private ?string $version = null;
 
-    private bool $versionChecked = false;
-
     /** @param array<string,string> $extraEnv */
     public function __construct(
         private string $configDir,
@@ -30,10 +28,10 @@ final class ClaudeCode
         $this->configDir = rtrim($configDir, '/\\');
     }
 
+    /** Only a found version is cached, so a long-lived instance notices a CLI installed or fixed later. */
     public function version(): ?string
     {
-        if (! $this->versionChecked) {
-            $this->versionChecked = true;
+        if ($this->version === null) {
             try {
                 $process = new Process([$this->binary, '--version'], env: $this->environment(), timeout: 5);
                 $process->run();
@@ -85,8 +83,6 @@ final class ClaudeCode
                     throw new Unavailable;
                 }
             });
-        } catch (ClaudeCodeException $exception) {
-            throw $exception;
         } catch (Throwable) {
             throw new Unavailable;
         } finally {

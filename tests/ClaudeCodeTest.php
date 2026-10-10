@@ -156,6 +156,17 @@ final class ClaudeCodeTest extends TestCase
         $claude->prompt('Sys', 'x', self::SCHEMA);
     }
 
+    public function test_cli_installed_after_a_failed_check_becomes_available(): void
+    {
+        $binary = $this->dir.'/claude';
+        $claude = new ClaudeCode(configDir: $this->dir, token: 'test-token', binary: $binary);
+        $this->assertFalse($claude->available());
+
+        symlink(__DIR__.'/Fixtures/fake-claude.php', $binary);
+
+        $this->assertTrue($claude->available());
+    }
+
     public function test_version_check(): void
     {
         $current = $this->claude();
