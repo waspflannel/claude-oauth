@@ -2,6 +2,7 @@
 
 namespace Waspflannel\ClaudeOAuth\Tests;
 
+use Illuminate\Filesystem\Filesystem;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +26,7 @@ final class ClaudeCodeTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->remove($this->dir);
+        (new Filesystem)->deleteDirectory($this->dir);
     }
 
     public function test_structured_prompt_runs_the_isolated_cli(): void
@@ -89,14 +90,7 @@ final class ClaudeCodeTest extends TestCase
 
     public function test_extra_env_cannot_override_the_token(): void
     {
-        $claude = new ClaudeCode(
-            configDir: $this->dir,
-            token: 'test-token',
-            binary: __DIR__.'/Fixtures/fake-claude.php',
-            extraEnv: ['CLAUDE_CODE_OAUTH_TOKEN' => 'other', 'FAKE_CLAUDE_SCENARIO' => 'success'],
-        );
-
-        $claude->prompt('Sys', 'x', self::SCHEMA);
+        $this->claude(options: ['extraEnv' => ['CLAUDE_CODE_OAUTH_TOKEN' => 'other']])->prompt('Sys', 'x', self::SCHEMA);
 
         $this->assertSame('test-token', $this->invocation()['env']['CLAUDE_CODE_OAUTH_TOKEN']);
     }
@@ -144,10 +138,8 @@ final class ClaudeCodeTest extends TestCase
     #[TestWith(['  '])]
     public function test_missing_token_never_starts_the_cli(?string $token): void
     {
-        $claude = new ClaudeCode(configDir: $this->dir, token: $token, binary: __DIR__.'/Fixtures/fake-claude.php');
-
         try {
-            $claude->prompt('Sys', 'x', self::SCHEMA);
+            $this->claude(options: ['token' => $token])->prompt('Sys', 'x', self::SCHEMA);
             $this->fail('Expected an exception.');
         } catch (NotConfigured) {
             $this->assertFileDoesNotExist($this->dir.'/invocation.json');
@@ -197,19 +189,5 @@ final class ClaudeCodeTest extends TestCase
     private function value(array $argv, string $flag): string
     {
         return $argv[array_search($flag, $argv, true) + 1];
-    }
-
-    private function remove(string $path): void
-    {
-        if (is_dir($path) && ! is_link($path)) {
-            foreach (scandir($path) as $entry) {
-                if ($entry !== '.' && $entry !== '..') {
-                    $this->remove($path.'/'.$entry);
-                }
-            }
-            rmdir($path);
-        } elseif (file_exists($path) || is_link($path)) {
-            unlink($path);
-        }
     }
 }

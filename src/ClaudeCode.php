@@ -78,6 +78,7 @@ final class ClaudeCode
         $bytes = 0;
         $stopping = false;
         try {
+            // Throwing from the output callback aborts run() as soon as the byte cap is crossed.
             $process->run(function (string $type, string $chunk) use (&$bytes, &$stopping): void {
                 $bytes += strlen($chunk);
                 if (! $stopping && $bytes > $this->maxOutputBytes) {
