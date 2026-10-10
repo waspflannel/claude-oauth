@@ -172,7 +172,7 @@ final class ClaudeCode
             'HOME' => $this->configDir,
             'USERPROFILE' => $this->configDir,
             'CLAUDE_CONFIG_DIR' => $this->configDir,
-            'CLAUDE_CODE_OAUTH_TOKEN' => $this->token ?? false,
+            'CLAUDE_CODE_OAUTH_TOKEN' => trim($this->token),
             'CLAUDE_CODE_DISABLE_FAST_MODE' => '1',
         ];
     }

@@ -12,7 +12,7 @@ return [
     'effort' => env('CLAUDE_EFFORT'),
 
     // Private, writable. Used as the CLI's cwd, HOME and CLAUDE_CONFIG_DIR.
-    'config_dir' => env('CLAUDE_CONFIG_DIR', storage_path('app/private/claude-code')),
+    'config_dir' => env('CLAUDE_OAUTH_CONFIG_DIR',storage_path('app/private/claude-code')),
 
     'timeout' => (int) env('CLAUDE_TIMEOUT', 120),
 ];

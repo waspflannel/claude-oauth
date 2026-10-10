@@ -64,11 +64,11 @@ CLAUDE_CODE_OAUTH_TOKEN=...
 CLAUDE_BINARY=claude
 CLAUDE_MODEL=sonnet
 CLAUDE_EFFORT=low
-CLAUDE_CONFIG_DIR=/path/to/private/dir
+CLAUDE_OAUTH_CONFIG_DIR=/path/to/private/dir
 CLAUDE_TIMEOUT=120
 ```
 
-`CLAUDE_CONFIG_DIR` defaults to `storage_path('app/private/claude-code')`. `CLAUDE_EFFORT` is optional.
+`CLAUDE_OAUTH_CONFIG_DIR` defaults to `storage_path('app/private/claude-code')`. `CLAUDE_EFFORT` is optional.
 
 ```php
 use Waspflannel\ClaudeOAuth\ClaudeCode;

@@ -95,6 +95,13 @@ final class ClaudeCodeTest extends TestCase
         $this->assertSame('test-token', $this->invocation()['env']['CLAUDE_CODE_OAUTH_TOKEN']);
     }
 
+    public function test_token_is_sent_trimmed(): void
+    {
+        $this->claude(options: ['token' => "test-token\n"])->prompt('Sys', 'x', self::SCHEMA);
+
+        $this->assertSame('test-token', $this->invocation()['env']['CLAUDE_CODE_OAUTH_TOKEN']);
+    }
+
     #[DataProvider('failures')]
     public function test_failures_map_to_fixed_exceptions(string $scenario, string $class): void
     {
